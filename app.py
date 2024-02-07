@@ -28,12 +28,12 @@ def login():
 def get_pokemon_info(pokemon_identifier):
     url = f"https://pokeapi.co/api/v2/pokemon/{pokemon_identifier}/"
     response = requests.get(url)
-    output = []
+    # output = []
     if response.status_code == 200:
         data = response.json()
         pokemon_info = {
             
-            "name": data["name", 'N/A'],
+            "name": data["name"],
             "ability": data["abilities"][0]["ability"]["name"],
             "base_experience": data["base_experience"],
             "sprite_url": data["sprites"]["front_shiny"]
@@ -47,7 +47,7 @@ def get_pokemon_info(pokemon_identifier):
     for pokemon in pokemon_identifier:
 
        pokemon_data = get_pokemon_info(pokemon)
-       output.append(pokemon_data)
+    #    output.append(pokemon_data)
 
        if pokemon_data:
          print(pokemon_data)
