@@ -1,3 +1,47 @@
-body{
-    background-color: rgb(208, 208, 160);
+body {
+    background: rgb(213,91,242);
+    background: linear-gradient(184deg, rgb(215, 82, 249) 0%, rgba(247,105,232,1) 50%, rgba(90,9,101,1) 96%);
+    height: 100VH;
 }
+.bg-body-tertiary{
+    background: rgb(213,91,242);
+    background: linear-gradient(184deg, rgba(213,91,242,1) 0%,rgba(213,91,242,1) 0%,rgba(213,91,242,1) 0%);
+}
+
+.flex-container{
+ width: 100%;   
+ display: flex;
+ justify-content: center;
+
+ 
+
+}
+
+form{
+   
+    max-width: 600px;
+    width: 50%;
+    min-width: 330px;
+    margin-top: 20vh;
+    box-shadow: rgb(252, 247, 247) 0px 22px 70px 4px; 
+    backdrop-filter: blur(50px);
+    padding: 25px;   
+    border-radius: 15px;
+    
+   
+}
+
+.my-btn{
+    color: rgb(244, 212, 130);
+    box-shadow: rgb(249, 161, 237) 10px 22px 77px 14px;
+}
+
+
+
+.my-btn:hover{
+    color: rgb(249, 161, 237);
+    box-shadow: rgb(62, 188, 242) 10px 22px 77px 14px;
+    background-color: rgb(33, 177, 238);
+}
+
+

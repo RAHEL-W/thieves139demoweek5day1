@@ -2,6 +2,7 @@ from flask import  request, render_template
 import requests
 
 from  app  import app
+from .forms import SignupForm
 from .forms import LoginForm
 from .forms import ErgastForm
 
@@ -14,17 +15,32 @@ def hello_world():
 def user(name):
     return f'hello {name}'
 
+
+    
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = SignupForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        return f'welcome to pokemon thanks for sign up  {email} {password}'
+    else:
+        return render_template('signup.html', form=form)
+    
+    
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if request.method == 'POST' and form.validate_on_submit():
         email = form.email.data
         password = form.password.data
-        return f'{email} {password}'
+        return f'welcome to pokemon {email} {password}'
     else:
         return render_template('login.html', form=form)
-    
-    
+        
     
 
 
@@ -32,7 +48,7 @@ def login():
 def get_pokemon_info(pokemon_identifier):
     url = f"https://pokeapi.co/api/v2/pokemon/{pokemon_identifier}/"
     response = requests.get(url)
-    # output = []
+   
     if response.status_code == 200:
         data = response.json()
         pokemon_info = {
@@ -44,23 +60,6 @@ def get_pokemon_info(pokemon_identifier):
         }
         return pokemon_info
    
-    
-    
-    
-    pokemon_identifier = []
-    for pokemon in pokemon_identifier:
-
-       pokemon_data = get_pokemon_info(pokemon)
-    #    output.append(pokemon_data)
-
-       if pokemon_data:
-         print(pokemon_data)
-       else:
-        print(f"Error: Unable to fetch data for {pokemon_identifier}")    
-
-
-
-
 @app.route('/ergast', methods=['GET', 'POST'])
 def ergast():
     form = ErgastForm()
@@ -68,6 +67,7 @@ def ergast():
         pokemon_identifier = form.name_or_id.data
         pokemons = get_pokemon_info(pokemon_identifier)
         return render_template('ergast.html', form=form, pokemons = pokemons)
+        
     else:
        return render_template('ergast.html', form=form)
     
