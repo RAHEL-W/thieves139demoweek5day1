@@ -13,17 +13,14 @@ Ergast
 
 {%block content%}
 {%include './includes/nav.html'%}
-<form method="post">
+<form method="POST">
+
+  {{ form.hidden_tag()}}
     <div class="mb-3">
       <label for="text" class="form-label">pokemon name or id</label>
-      <input type="text" class="form-control" id="name_or_id" name = 'name_or_id' >
-   
-    
-    
-
-      
+      {{form.name_or_id(class="form-control", id="name_or_id")}}
     </div>
-    <button type="submit" class="btn-primary">submit</button>
+    {{form.submit_btn}}
   </form>
 
   {% if pokemons %}

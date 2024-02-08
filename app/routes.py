@@ -3,6 +3,8 @@ import requests
 
 from  app  import app
 from .forms import LoginForm
+from .forms import ErgastForm
+
 
 @app.route("/")
 def hello_world():
@@ -61,12 +63,12 @@ def get_pokemon_info(pokemon_identifier):
 
 @app.route('/ergast', methods=['GET', 'POST'])
 def ergast():
-    if  request.method == 'POST':
-        pokemon_identifier = request.form.get('name_or_id')
+    form = ErgastForm()
+    if  request.method == 'POST' and form.validate_on_submit():
+        pokemon_identifier = form.name_or_id.data
         pokemons = get_pokemon_info(pokemon_identifier)
-        return render_template('ergast.html', pokemons = pokemons)
+        return render_template('ergast.html', form=form, pokemons = pokemons)
     else:
-       return render_template('ergast.html')
+       return render_template('ergast.html', form=form)
     
-
 
