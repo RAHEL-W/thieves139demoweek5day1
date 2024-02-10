@@ -6,7 +6,10 @@ body {
 .bg-body-tertiary{
     background: rgb(213,91,242);
     background: linear-gradient(184deg, rgba(213,91,242,1) 0%,rgba(213,91,242,1) 0%,rgba(213,91,242,1) 0%);
+   
 }
+
+
 
 .flex-container{
  width: 100%;   

@@ -20,11 +20,11 @@ Ergast
       <label for="text" class="form-label">pokemon name or id</label>
       {{form.name_or_id(class="form-control", id="name_or_id")}}
     </div>
-    {{form.submit_btn}}
+    {{form.submit_btn(class ="btn my-btn")}}
   </form>
 
   {% if pokemons %}
-  <div class="card" style="width: 20rem; background-color: #e7a5f0; margin: auto; padding-left: 50px; color: rgb(253, 228, 192); border: 3px solid rgb(248, 214, 173); font-size: 22px ;">
+  <div class="card">
     <img src="{{pokemons.sprite_url}}" class="card-img-top" alt="...">
     <div>
       <p >{{'name'}}:  {{pokemons.name}}<br>
