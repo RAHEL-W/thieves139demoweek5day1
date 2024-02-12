@@ -4,7 +4,7 @@ import requests
 from  app  import app
 from .forms import SignupForm
 from .forms import LoginForm
-from .forms import ErgastForm
+from .forms import PokemonForm
 from app.models import User
 from werkzeug.security import check_password_hash
 from flask_login import login_user, logout_user
@@ -80,15 +80,15 @@ def get_pokemon_info(pokemon_identifier):
         }
         return pokemon_info
    
-@app.route('/ergast', methods=['GET', 'POST'])
-def ergast():
-    form = ErgastForm()
+@app.route('/pokemon', methods=['GET', 'POST'])
+def pokemon():
+    form = PokemonForm()
     if  request.method == 'POST' and form.validate_on_submit():
         pokemon_identifier = form.name_or_id.data
         pokemons = get_pokemon_info(pokemon_identifier)
-        return render_template('ergast.html', form=form, pokemons = pokemons)
+        return render_template('pokemon.html', form=form, pokemons = pokemons)
         
     else:
-       return render_template('ergast.html', form=form)
+       return render_template('pokemon.html', form=form)
     
 
