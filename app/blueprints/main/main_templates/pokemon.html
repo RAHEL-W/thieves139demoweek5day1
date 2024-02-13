@@ -25,11 +25,15 @@ Ergast
 
   {% if pokemons %}
   <div class="card">
-    <img src="{{pokemons.sprite_url}}" class="card-img-top" alt="...">
+    <img src="{{pokemons.sprite_img}}" class="card-img-top" alt="...">
     <div>
       <p >{{'name'}}:  {{pokemons.name}}<br>
-      {{'ability'}}:  {{pokemons.ability}}<br>
-      {{'base_experience'}}: {{pokemons.base_experience}}</p>
+      {{'base_hp'}}: {{pokemons.base_hp}} <br>
+      {{'base_attack'}}: {{pokemons.base_attack}} <br>
+      {{'base_defense'}}: {{pokemons.base_defense}} 
+
+    
+    </p>
       
     </div>
   </div>
