@@ -5,11 +5,18 @@ from werkzeug.security  import  generate_password_hash
 
 db = SQLAlchemy()
 
+
+My_Pokemon = db.Table('My_Pokemon',
+                      db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+                      db.Column('pokemon_name', db.String, db.ForeignKey('pokemon.name'))
+)
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     password =db.Column(db.String, nullable=False)
+    catch = db.relationship('Pokemon', secondary=My_Pokemon, backref='catch_by')
         
 
     def __init__(self, username, email, password):
@@ -46,6 +53,15 @@ class Pokemon(db.Model):
     def save(self):  
         db.session.add(self)  
         db.session.commit()     
+
+
+
+
+
+
+
+     
+
 
 
 

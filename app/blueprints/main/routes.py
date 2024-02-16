@@ -1,8 +1,10 @@
 from . import main
-from flask import render_template, request
+from flask import render_template, request, flash, redirect, url_for
 import requests
 from .forms import PokemonForm
 from  app.models import Pokemon, db
+
+from flask_login import current_user
 
 
 
@@ -60,3 +62,42 @@ def pokemon():
         
     else:
        return render_template('pokemon.html', form=form)
+
+
+
+
+
+@main.route('/my_pokemon', methods=['GET', 'POST'])
+def My_Pokemon():
+    form = PokemonForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        if current_user.is_authenticated:  # Check if user is logged in
+            pokemon_identifier = form.name_or_id.data
+            pokemon_info = get_pokemon_info(pokemon_identifier)
+            if pokemon_info:
+                new_pokemon = Pokemon(
+                    name=pokemon_info["name"],
+                    base_hp=pokemon_info["base_hp"],
+                    base_attack=pokemon_info["base_attack"],
+                    base_defense=pokemon_info["base_defense"],
+                    sprite_img=pokemon_info["sprite_img"]
+                )
+                new_pokemon.catch_by.append(current_user)  
+                db.session.add(new_pokemon)
+                db.session.commit()
+                print("Pokemon caught and saved to database successfully!")
+                return redirect(url_for('main.my_pokemon'))  
+                print(f"Error: Unable to fetch data for {pokemon_identifier}")
+                flash("Error: Unable to catch Pokemon. Please try again.")
+        else:
+            flash("You need to be logged in to catch Pokemon.") 
+
+    return render_template('my_pokemon.html', form=form)
+
+
+@main.route('/team')
+def team():
+     my_pokemons = My_Pokemon.query.all()
+     return render_template('team.html', my_pokemons=my_pokemons)
+     
+

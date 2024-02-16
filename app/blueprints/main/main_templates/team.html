@@ -1,0 +1,31 @@
+{% extends 'base.html'%}
+
+{%block title%}
+ Team
+
+{%endblock%}
+
+{%block styles%}
+
+{%endblock%}
+
+{%block content%}
+
+  {%for My_Pokemon in My_Pokemons%}
+
+  <div class="card">
+    <img src="{{pokemons.sprite_img}}" class="card-img-top" alt="...">
+    <div>
+      <p >{{'name'}}:  {{pokemons.name}}<br>
+      {{'base_hp'}}: {{pokemons.base_hp}} <br>
+      {{'base_attack'}}: {{pokemons.base_attack}} <br>
+      {{'base_defense'}}: {{pokemons.base_defense}} 
+      
+    
+    </p>
+    <!-- <button type="submit" name="catch" value="1">Catch</button> -->
+    </div>
+
+
+  {%end for%}
+  {%endblock%}
