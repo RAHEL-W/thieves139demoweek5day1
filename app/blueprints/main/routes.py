@@ -1,10 +1,10 @@
 from . import main
-from flask import render_template, request, flash, redirect, url_for
+from flask import render_template, request, flash, url_for,  redirect
 import requests
 from .forms import PokemonForm
-from  app.models import Pokemon, db
+from  app.models import Pokemon, db, User, My_Pokemon 
 
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 
 
@@ -44,7 +44,8 @@ def pokemon():
     if  request.method == 'POST' and form.validate_on_submit():
         pokemon_identifier = form.name_or_id.data
         pokemons = get_pokemon_info(pokemon_identifier)
-        if pokemons:
+        queried_poke = Pokemon.query.get(pokemon_identifier)
+        if pokemons and not queried_poke:
                 new_pokemon = Pokemon(
                     name=pokemons["name"],
                     base_hp=pokemons["base_hp"],
@@ -52,10 +53,11 @@ def pokemon():
                     base_defense=pokemons["base_defense"],
                     sprite_img=pokemons["sprite_img"]
                 )
-                db.session.add(new_pokemon)
                 db.session.commit()
                 print("Pokemon data saved to database successfully!")
         else:
+                
+                
                 print(f"Error: Unable to fetch data for {pokemon_identifier}")
 
         return render_template('pokemon.html', form=form, pokemons = pokemons)
@@ -65,39 +67,57 @@ def pokemon():
 
 
 
+     
 
 
-@main.route('/my_pokemon', methods=['GET', 'POST'])
-def My_Pokemon():
-    form = PokemonForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        if current_user.is_authenticated:  # Check if user is logged in
-            pokemon_identifier = form.name_or_id.data
-            pokemon_info = get_pokemon_info(pokemon_identifier)
-            if pokemon_info:
-                new_pokemon = Pokemon(
-                    name=pokemon_info["name"],
-                    base_hp=pokemon_info["base_hp"],
-                    base_attack=pokemon_info["base_attack"],
-                    base_defense=pokemon_info["base_defense"],
-                    sprite_img=pokemon_info["sprite_img"]
-                )
-                new_pokemon.catch_by.append(current_user)  
-                db.session.add(new_pokemon)
-                db.session.commit()
-                print("Pokemon caught and saved to database successfully!")
-                return redirect(url_for('main.my_pokemon'))  
-                print(f"Error: Unable to fetch data for {pokemon_identifier}")
-                flash("Error: Unable to catch Pokemon. Please try again.")
-        else:
-            flash("You need to be logged in to catch Pokemon.") 
-
-    return render_template('my_pokemon.html', form=form)
 
 
+
+
+
+# @main.route('/my/<name>')
+# @login_required
+# def my(name):
+#     return f" hello  {name}"
+
+
+# @main.route('/my_pokemon/<pokemon_name>')
+# def my_pokemon(pokemon_name):
+#      return f"work {pokemon_name}"
+    
 @main.route('/team')
 def team():
-     my_pokemons = My_Pokemon.query.all()
-     return render_template('team.html', my_pokemons=my_pokemons)
-     
+    caught_pokemon = current_user.catch.all()
+    return render_template('team.html', caught_pokemon=caught_pokemon)  
+
+@main.route('/my_pokemon/<pokemon_name>')
+@login_required
+def my_pokemon(pokemon_name):
+    user = User.query.get(current_user.id)
+    pokemon = Pokemon.query.filter_by(name =pokemon_name).first()
+
+    caught_pokemon = current_user.catch.all()
+    if len(caught_pokemon)  < 6:
+        if pokemon not in caught_pokemon :
+            current_user.catch.append(pokemon)
+            db.session.commit()
+            
+            flash(f'Successfully caught {pokemon.name}', 'success')
+        else:
+            flash(f'Error:  {pokemon.name}  already  caught  by  you ', 'warning')  
+    else:
+         flash(f'Error: {current_user.username} cant caught more than 5', 'warning')       
+         return redirect(url_for('main.team')) 
+    return redirect(url_for('main.pokemon')) 
+
+@main.route('/remove/<pokemon_name>')
+@login_required
+def remove(pokemon_name):
+     user=  User.query.get(current_user.id)
+     pokemon= Pokemon.query.filter_by(name= pokemon_name).first()
+     current_user.catch.remove(pokemon)
+     db.session.commit()
+     flash(f'Successfully remove {pokemon.name}', 'success')
+     return redirect(url_for('main.team')) 
+
 

@@ -16,7 +16,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     password =db.Column(db.String, nullable=False)
-    catch = db.relationship('Pokemon', secondary=My_Pokemon, backref='catch_by')
+    catch = db.relationship('Pokemon', secondary=My_Pokemon,  lazy='dynamic')
         
 
     def __init__(self, username, email, password):
