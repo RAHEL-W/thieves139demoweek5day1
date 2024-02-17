@@ -1,7 +1,7 @@
 from . import main
 from flask import render_template, request, flash, url_for,  redirect
 import requests
-from .forms import PokemonForm
+from .forms import PokemonForm, BattleForm
 from  app.models import Pokemon, db, User, My_Pokemon 
 
 from flask_login import current_user, login_required
@@ -67,23 +67,6 @@ def pokemon():
 
 
 
-     
-
-
-
-
-
-
-
-# @main.route('/my/<name>')
-# @login_required
-# def my(name):
-#     return f" hello  {name}"
-
-
-# @main.route('/my_pokemon/<pokemon_name>')
-# def my_pokemon(pokemon_name):
-#      return f"work {pokemon_name}"
     
 @main.route('/team')
 def team():
@@ -106,9 +89,11 @@ def my_pokemon(pokemon_name):
         else:
             flash(f'Error:  {pokemon.name}  already  caught  by  you ', 'warning')  
     else:
-         flash(f'Error: {current_user.username} cant caught more than 5', 'warning')       
+         flash(f'Error: {current_user.username} already have maximum of pokemons ', 'warning')       
          return redirect(url_for('main.team')) 
     return redirect(url_for('main.pokemon')) 
+
+
 
 @main.route('/remove/<pokemon_name>')
 @login_required
@@ -120,4 +105,24 @@ def remove(pokemon_name):
      flash(f'Successfully remove {pokemon.name}', 'success')
      return redirect(url_for('main.team')) 
 
+
+
+
+@main.route('/battle', methods=['GET', 'POST'])
+@login_required
+def battle():
+    form = BattleForm()
+    my_pokemons = current_user.catch.all()
+    if request.method == 'POST':
+         username = form.username.data
+         other_user= User.query.filter_by(username=username).first()
+         if  other_user:
+              other_user_pokemon  = other_user.catch.all()
+              return render_template('battle.html', my_pokemons = my_pokemons, other_user_pokemon=other_user_pokemon, form=form)
+         else:
+              flash(f'user  not found', 'info')
+              return redirect(url_for('main.battle'))
+    else:
+        
+         return render_template('battle.html', my_pokemons=my_pokemons, form=form)
 
